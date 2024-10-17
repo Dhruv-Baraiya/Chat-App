@@ -12,7 +12,7 @@ const port = process.env.PORT || 3030;
 const db_url = process.env.DB_URL;
 
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: process.env.ORIGIN,
     methods:["GET", "POST", "PUT", "DELETE"],
     credentials: true,
 }));
