@@ -86,16 +86,16 @@
 
 import Message from "../models/MessageModel.js";
 import cloudinary from "../middlewares/cloudinary.js";
-import multer from "multer";
+// import multer from "multer";
 // import { v2 as cloudinary } from 'cloudinary';
 // import {mkdirSync, renameSync} from 'fs'
 // import streamifier from 'streamifier';
 
 // Set up multer to handle file uploads in memory
-const storage = multer.memoryStorage();
-const upload = multer({
-    storage: storage
-});
+// const storage = multer.memoryStorage();
+// const upload = multer({
+//     storage: storage
+// });
 
 // Upload middleware to handle single file uploads
 
