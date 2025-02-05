@@ -6,7 +6,7 @@ import Profile from './pages/profile'
 import { useAppStore } from './store'
 import apiClient from './lib/api-client'
 import { GETUSERDATA_ROUTE } from './utils/constants'
-import Loading from './components/ui/spinner'
+import {Loading} from './components/ui/spinner'
 // import axios from 'axios'
 
 function App() {

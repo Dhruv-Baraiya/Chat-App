@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import cloudinary from "../middlewares/cloudinary.js";
 
 
-const maxAge = 1 * 24 * 60 * 60 * 1000;
+const maxAge = 20000;
 
 const createToken = (email, userId) => {
     return jwt.sign({ email, userId }, process.env.JWT_KEY, { expiresIn: maxAge });
@@ -168,33 +168,72 @@ export const updateProfile = async (req, res, next) => {
 //     }
 // };
 
+// export const addProfileImage = async (req, res, next) => {
+//     try {
+//         const { userId } = req;
+//         const { image, mail } = req.body;
+
+//         // Add a timestamp to make the public_id unique
+//         const fileName = `${mail}-profile-${userId}-${new Date().getTime()}`; 
+
+//         const uploadImage = await cloudinary.v2.uploader.upload(image, {
+//             public_id: fileName,
+//             folder: 'Chat_App/User_Profile',
+//             allowed_formats: ['png', 'jpg', 'jpeg', 'webp', 'svg', 'ico']
+//         });
+
+//         const publicId = uploadImage.public_id;  
+
+//         await userModel.findByIdAndUpdate(userId, {
+//             image: publicId  
+//         }, { runValidators: true });
+
+//         return res.status(200).json({
+//             image: publicId,  
+//             message: "Profile image updated successfully"
+//         });
+//     } catch (error) {
+//         console.log({ error });
+//         return res.status(500).send("Internal Server Error");
+//     }
+// };
+
+// letest limit up to 10 mb image
+
 export const addProfileImage = async (req, res, next) => {
     try {
         const { userId } = req;
         const { image, mail } = req.body;
 
-        // Add a timestamp to make the public_id unique
-        const fileName = `${mail}-profile-${userId}-${new Date().getTime()}`; 
+        // Estimate the image size in bytes (base64 size approximation)
+        const estimatedSize = (image.length * 3) / 4;
+        const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10 MB
 
-        const uploadImage = await cloudinary.v2.uploader.upload(image, {
+        if (estimatedSize > MAX_IMAGE_SIZE) {
+            return res.status(400).json({
+                message: "File size exceeds the 10 MB limit. Please upload a smaller image."
+            });
+        }
+
+        const fileName = `${mail}-profile-${userId}-${new Date().getTime()}`;
+
+        const uploadImage = await cloudinary.v2.uploader.upload_large(image, {
             public_id: fileName,
             folder: 'Chat_App/User_Profile',
-            allowed_formats: ['png', 'jpg', 'jpeg', 'webp', 'svg', 'ico']
+            allowed_formats: ['png', 'jpg', 'jpeg', 'webp', 'svg', 'ico'],
         });
 
-        const publicId = uploadImage.public_id;  
+        const publicId = uploadImage.public_id;
 
-        await userModel.findByIdAndUpdate(userId, {
-            image: publicId  
-        }, { runValidators: true });
+        await userModel.findByIdAndUpdate(userId, { image: publicId }, { runValidators: true });
 
         return res.status(200).json({
-            image: publicId,  
+            image: publicId,
             message: "Profile image updated successfully"
         });
     } catch (error) {
-        console.log({ error });
-        return res.status(500).send("Internal Server Error");
+        console.error("Error uploading profile image:", error);
+        return res.status(500).json({ message: "Internal Server Error" });
     }
 };
 

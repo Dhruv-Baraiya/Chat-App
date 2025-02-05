@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import apiClient from '@/lib/api-client';
 import { ADD_PROFILE_IMAGE_ROUTE, UPDATE_PROFILE_ROUTE, REMOVE_PROFILE_IMAGE_ROUTE } from '@/utils/constants';
-import Loading from '@/components/ui/spinner';
+import {Loading} from '@/components/ui/spinner';
 
 function Profile() {
   const { userInfo, setUserInfo } = useAppStore();

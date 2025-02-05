@@ -4,6 +4,8 @@ import { verifyToken } from "../middlewares/Authmiddleware.js";
 
 const authRoutes = Router();
 
+
+
 authRoutes.post("/signup",signUp);
 authRoutes.post("/login",login);
 authRoutes.get("/user-info",verifyToken,getUserInfo);
